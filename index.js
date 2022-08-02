@@ -75,15 +75,16 @@ app.put('/talker/:id',
   validateDate,
   validateRate,
   async (req, res) => {
-  const { name, age, id, talk: { watchedAt, rate } } = req.body;
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
   const talkerArray = await readFile();
   
-  const talkerIndex = talkerArray.find((item) => item.id === Number(id));
-  const newObject = { ...talkerArray[talkerIndex], name, age, talk: { watchedAt, rate } };
+  const talkerIndex = talkerArray.findIndex((item) => item.id === Number(id));
+  talkerArray[talkerIndex] = { ...talkerArray[talkerIndex], name, age, talk };
   
-  await createTalker(talkerArray[talkerIndex] = newObject);
+  await createTalker(talkerArray);
 
-  return res.status(HTTP_OK_STATUS).json(newObject);
+  return res.status(HTTP_OK_STATUS).json(talkerArray[talkerIndex]);
 });
 
 app.delete('/talker/:id', validateToken, async (req, res) => {
