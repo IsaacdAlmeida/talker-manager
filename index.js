@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { readFile } = require('./utils/fs-utils');
 const { generateToken } = require('./utils/tokenGenerator');
+const { validateEmail } = require('./utils/validateEmail');
+const { validatePassword } = require('./utils/validatePassword');
 
 const app = express();
 app.use(bodyParser.json());
@@ -32,7 +34,7 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
-app.post('/login', (_req, res) => {
+app.post('/login', validateEmail, validatePassword, (_req, res) => {
   const newToken = generateToken();
 
   res.status(HTTP_OK_STATUS).json({ token: newToken });
