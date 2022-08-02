@@ -66,6 +66,25 @@ app.post('/talker',
   return res.status(HTTP_CREATED_STATUS).json(newTalker);
 });
 
+app.put('/talker/:id', 
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateDate,
+  validateRate,
+  async (req, res) => {
+  const { name, age, id, talk: { watchedAt, rate } } = req.body;
+  const talkerArray = await readFile();
+  
+  const talkerIndex = talkerArray.find((item) => item.id === Number(id));
+  const newObject = { ...talkerArray[talkerIndex], name, age, talk: { watchedAt, rate } };
+  
+  await createTalker(talkerArray[talkerIndex] = newObject);
+
+  return res.status(HTTP_OK_STATUS).json(newObject);
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
