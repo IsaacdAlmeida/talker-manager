@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { readFile } = require('./utils/fs-utils');
+const { generateToken } = require('./utils/tokenGenerator');
 
 const app = express();
 app.use(bodyParser.json());
@@ -29,6 +30,12 @@ app.get('/talker/:id', async (req, res) => {
   } catch (error) {
     return res.status(HTTP_INTERNAL_ERROR).end();
   }
+});
+
+app.post('/login', (_req, res) => {
+  const newToken = generateToken();
+
+  res.status(HTTP_OK_STATUS).json({ token: newToken });
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
