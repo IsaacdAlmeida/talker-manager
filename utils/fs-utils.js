@@ -5,6 +5,9 @@ const readFile = async () => {
   return JSON.parse(fileContent);
 };
 
+const createTalker = (newTalker) => fs.writeFile('./talker.json', JSON.stringify(newTalker));
+
 module.exports = {
   readFile,
+  createTalker,
 };
