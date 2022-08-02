@@ -4,6 +4,12 @@ const { readFile, createTalker } = require('./utils/fs-utils');
 const { generateToken } = require('./utils/tokenGenerator');
 const { validateEmail } = require('./utils/validateEmail');
 const { validatePassword } = require('./utils/validatePassword');
+const { validateToken } = require('./utils/validateToken');
+const { validateName } = require('./utils/validateName');
+const { validateAge } = require('./utils/validateAge');
+const { validateTalk } = require('./utils/validateTalk');
+const { validateDate } = require('./utils/validateDate');
+const { validateRate } = require('./utils/validateRate');
 
 const app = express();
 app.use(bodyParser.json());
@@ -41,14 +47,23 @@ app.post('/login', validateEmail, validatePassword, (_req, res) => {
   res.status(HTTP_OK_STATUS).json({ token: newToken });
 });
 
-app.post('/talker', async (req, res) => {
+app.post('/talker', 
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateDate,
+  validateRate,
+  async (req, res) => {
   const { name, age, talk: { watchedAt, rate } } = req.body;
   const talkerArray = await readFile();
-  const newTalker = { name, age, talk: { watchedAt, rate } };
+  const newId = talkerArray.length + 1;
+  const newTalker = { name, id: newId, age, talk: { watchedAt, rate } };
 
   talkerArray.push(newTalker);
   await createTalker(talkerArray);
-  return res.status(HTTP_CREATED_STATUS).json({ newTalker });
+
+  return res.status(HTTP_CREATED_STATUS).json(newTalker);
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
