@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 
 const HTTP_OK_STATUS = 200;
 const HTTP_CREATED_STATUS = 201;
+const HTTP_NO_CONTENT_STATUS = 204;
 const HTTP_NOT_FOUND = 404;
 const HTTP_INTERNAL_ERROR = 500;
 const PORT = '3000';
@@ -83,6 +84,16 @@ app.put('/talker/:id',
   await createTalker(talkerArray[talkerIndex] = newObject);
 
   return res.status(HTTP_OK_STATUS).json(newObject);
+});
+
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  const talkerArray = await readFile();
+  const filteredTalkers = talkerArray.filter((item) => item.id !== Number(id));
+
+  await createTalker(filteredTalkers);
+
+  return res.status(HTTP_NO_CONTENT_STATUS).end();
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
