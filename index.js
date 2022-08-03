@@ -21,6 +21,14 @@ const HTTP_NOT_FOUND = 404;
 const HTTP_INTERNAL_ERROR = 500;
 const PORT = '3000';
 
+app.get('/talker/search', validateToken, async (req, res) => {
+  const { q } = req.query;
+  const talkerArray = await readFile();
+
+  const filteredTalkers = talkerArray.filter((item) => item.name.includes(q));
+  return res.status(HTTP_OK_STATUS).json(filteredTalkers);
+});
+
 app.get('/talker', async (_req, res) => {
   const talkerArray = await readFile();  
   return res.status(HTTP_OK_STATUS).json(talkerArray);
